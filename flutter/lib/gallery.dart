@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:nitro_img_aes/ImagePreview.dart';
+import 'package:nitro_img_aes/galleryTile.dart';
 
 
 class Gallery extends StatelessWidget {
@@ -38,31 +39,9 @@ class Gallery extends StatelessWidget {
           crossAxisSpacing: 2,
           mainAxisSpacing: 2,
           children: List.generate(encryptedImageFiles.length, (index) {
-            return GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> ImagePreview(path: encryptedImageFiles[index],
-                encryptedImageFiles: encryptedImageFiles,
-                // delete: (){
-                //   print(encryptedImageFiles.length);
-                //   encryptedImageFiles.remove(encryptedImageFiles[index]);
-                //   print(encryptedImageFiles.length);
-                // },
-                )));
-              },
-              child: Container(
-                // color: Colors.white12,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: Colors.black,
-                  // border: Border.all(color: Colors.cyanAccent, width: 2)
-                ),
-                child: Image(
-                  image: FileImage(
-                      File(encryptedImageFiles[index]),
-                      scale: 1
-                  ),
-                ),
-              ),);
+            return GalleryTile(
+              path: encryptedImageFiles[index],
+              encryptedImageFiles: encryptedImageFiles,);
           }
             )
 

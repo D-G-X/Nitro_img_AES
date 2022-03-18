@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nitro_img_aes/gallery.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
 
 void main() => runApp(
   const MaterialApp(
@@ -17,6 +19,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int p = 0;
+  static const platform = MethodChannel("com.flutter.nitro/AES");
+
+  void Printy(String path) async{
+    String value;
+    try{
+      value = await platform.invokeMethod('Printy',{
+        "path": path,
+      });
+      print("From Java:" + value);
+    }catch(e){
+      print("ERROR: Printy: "+e.toString());
+    }
+  }
 
   List<String> encryptedImageFiles = [];
   int counter = 0;
@@ -26,9 +42,10 @@ class _HomePageState extends State<HomePage> {
   Future<String> _pickImage() async{
     try{
       final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-      print(pickedFile.path);
+      print("_pickImage()\n"+pickedFile.path.toString());
       encryptedImageFiles.add(pickedFile.path);
       counter = encryptedImageFiles.length;
+      Printy(pickedFile.path);
       return pickedFile.path;
     } catch (e){
       if (kDebugMode) {
@@ -101,7 +118,6 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       width: 170,
                       child: ElevatedButton(
-
                           onPressed: (){
                             String imageFile = _pickImage().toString();
                             print("Path: "+imageFile.toString());
@@ -152,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       width: 370,
                       child: ElevatedButton(
-                          onPressed: (){
+                          onPressed: ()async{
                             Navigator.push(context, MaterialPageRoute(builder: (context)=> Gallery(encryptedImageFiles: encryptedImageFiles)));
                           },
                           style: ElevatedButton.styleFrom(
