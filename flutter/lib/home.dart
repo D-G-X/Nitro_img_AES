@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nitro_img_aes/gallery.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import 'dart:async';
+
+import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(
   const MaterialApp(
@@ -19,7 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int p = 0;
   static const platform = MethodChannel("com.flutter.nitro/AES");
 
   void Printy(String path) async{
@@ -28,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       value = await platform.invokeMethod('Printy',{
         "path": path,
       });
-      print("From Java:" + value);
+      // print("From Java:" + value);
     }catch(e){
       print("ERROR: Printy: "+e.toString());
     }
@@ -44,8 +48,12 @@ class _HomePageState extends State<HomePage> {
       final pickedFile = await _picker.getImage(source: ImageSource.gallery);
       print("_pickImage()\n"+pickedFile.path.toString());
       encryptedImageFiles.add(pickedFile.path);
+
       counter = encryptedImageFiles.length;
-      Printy(pickedFile.path);
+
+      Printy(pickedFile.path); // encrypting the image
+
+      print(await File(pickedFile.path).exists());
       return pickedFile.path;
     } catch (e){
       if (kDebugMode) {
@@ -120,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                       child: ElevatedButton(
                           onPressed: (){
                             String imageFile = _pickImage().toString();
-                            print("Path: "+imageFile.toString());
+                            print("OnPressed Upload after _pickImage Path: "+imageFile.toString());
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.black,

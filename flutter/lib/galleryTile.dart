@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,7 +33,7 @@ class _GalleryTileState extends State<GalleryTile> {
 
   @override void initState() {
     super.initState();
-    decryptImage(widget.path);
+    // decryptImage(widget.path);
   }
 
 
@@ -70,6 +71,8 @@ class _GalleryTileState extends State<GalleryTile> {
               File(widget.path),
               scale: 1
           ),
+          fit: BoxFit.contain,
+
         ),
       ),);
   }
