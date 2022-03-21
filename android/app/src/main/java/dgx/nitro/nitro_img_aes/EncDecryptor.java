@@ -99,6 +99,8 @@ public class EncDecryptor implements Callable<EncDecryptor> {
                 fileip.write(i);
             }
             fileip.close();
+            File originalfile = new File(inputFilePath);
+            originalfile.delete();
         } catch (Exception e){
             System.out.println("Error: "+e);
         }

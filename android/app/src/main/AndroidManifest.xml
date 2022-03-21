@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dgx.nitro.nitro_img_aes">
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <application
+       android:requestLegacyExternalStorage="true"
         android:label="nitro_img_aes"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

@@ -18,7 +18,7 @@ import io.flutter.plugin.common.MethodChannel;
 public class MainActivity extends FlutterActivity {
     List<EncDecryptor> encryptorDecryptor = new ArrayList<EncDecryptor>();
     ThreadFactory threadFactory = Executors.defaultThreadFactory();
-    ExecutorService executorService = Executors.newFixedThreadPool(100,threadFactory);
+    ExecutorService executorService = Executors.newFixedThreadPool(1,threadFactory);
     private static final String CHANNEL = "com.flutter.nitro/AES";
 
     @SuppressLint("SdCardPath")
