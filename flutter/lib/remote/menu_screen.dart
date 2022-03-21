@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nitro_img_aes/remote/setup_screen.dart';
 
 import 'auth_screen.dart';
@@ -47,7 +46,7 @@ class MenuScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => AuthScreen()),
                   );
                 }),
-              SizedBox(width: 48),
+              const SizedBox(width: 48),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Colors.grey[700], // background

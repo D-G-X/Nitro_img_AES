@@ -43,15 +43,15 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 78.0),
-                Text(
+                const SizedBox(height: 78.0),
+                const Text(
                     "Enter your PIN",
                     style: TextStyle(
                       fontSize: 24,
 
                     )
                 ),
-                SizedBox(height: 12.0),
+                const SizedBox(height: 12.0),
                 Container(
                   height: 46.0,
                   child: Row(
@@ -72,15 +72,15 @@ class _AuthScreenState extends State<AuthScreen> {
           Expanded(
             flex: 5,
             child: GridView.builder(
-              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal:48.0),
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal:48.0),
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 childAspectRatio: 1 / 1,
               ),
                       itemBuilder: (context, index) => Container(
                         child: index == 9
-                            ? SizedBox()
+                            ? const SizedBox()
                             : Center(
                           child: MaterialButton(
                             onPressed: () {
@@ -88,12 +88,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                 inputText = inputText.substring(0, inputText.length - 1);
                                 clears = clears = clears.map((e) => false).toList();
                                 currentIndex--;
-                                if (currentIndex >= 0)
+                                if (currentIndex >= 0) {
                                   setState(() {
                                     clears[currentIndex] = true;
                                     actives[currentIndex] = false;
                                   });
-                                else {
+                                } else {
                                   currentIndex = 0;
                                 }
                                 print(inputText);
@@ -157,11 +157,11 @@ class _AuthScreenState extends State<AuthScreen> {
                             minWidth: 56,
                             height: 56,
                             child: index == 11
-                                ? Icon(Icons.backspace, color: Colors.black87)
+                                ? const Icon(Icons.backspace, color: Colors.black87)
                                 : Text(
                                     "${numbers[index == 10 ? index - 1 : index]}",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                     fontSize: 24,
                                     color: Colors.black87
                                   ),
@@ -196,7 +196,7 @@ class _AnimationBoxItemState extends State<AnimationBoxItem> with TickerProvider
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
   }
   @override
   Widget build(BuildContext context) {
@@ -206,12 +206,12 @@ class _AnimationBoxItemState extends State<AnimationBoxItem> with TickerProvider
     return AnimatedBuilder(
       animation: animationController,
       builder: (context, child) => Container(
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
             Container(),
             AnimatedContainer(
-              duration: Duration(milliseconds: 800),
+              duration: const Duration(milliseconds: 800),
               width: 16.0,
               height: 16.0,
               decoration: BoxDecoration(

@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 
+import 'package:nitro_img_aes/dartEncrypt/dartEncryptor.dart';
+import 'package:path_provider/path_provider.dart';
 import 'ImagePreview.dart';
+import 'package:encrypt/encrypt.dart' as encryptor;
 
 class GalleryTile extends StatefulWidget {
   final String path;
@@ -16,64 +19,131 @@ class GalleryTile extends StatefulWidget {
 }
 
 class _GalleryTileState extends State<GalleryTile> {
-  static const platform = MethodChannel("com.flutter.nitro/AES");
-
-  void decryptImage(String path) async{
-    String value;
-    try{
-      value  = await platform.invokeMethod('decryptImage',{
-        "path": path,
-      });
-      print("From Java decrypt:" + value);
-
-    }catch(e){
-      print("ERROR: decryptImage: "+e.toString());
-    }
+  // static const platform = MethodChannel("com.flutter.nitro/AES");
+  //
+  // void decryptImage(String path) async{
+  //   String value;
+  //   try{
+  //     print("EncryptedFile Exists: "+(await File(path+".aes").exists()).toString());
+  //     print("OriginalFile Exists: "+(await File(path).exists()).toString());
+  //     value  = await platform.invokeMethod('decryptImage',{
+  //       "path": path,
+  //     });
+  //     print("From Java decrypt:" + value);
+  //
+  //   }catch(e){
+  //     print("ERROR: decryptImage: "+e.toString());
+  //   }
+  // }
+  String tempDirPath = "/data/user/0/dgx.nitro.nitro_img_aes/cache";
+  Future<Directory?> get getAppDir async {
+    final appDocDir = await getExternalStorageDirectory();
+    return appDocDir;
   }
+
+  _getDecryptedImage(Directory d) async {
+    Directory? appDocDir = await getAppDir;
+    Uint8List encryptedBytes = await _readData(appDocDir!.path+"/"+widget.path+".aes");
+    var decryptedBytes = await _decryptBytes(encryptedBytes);
+    String absolutePathOfDecryptedFile = await _writeBytes(decryptedBytes, d.path+"/"+widget.path);
+    print("Image Decrypted. File saved at:\t"+absolutePathOfDecryptedFile);
+  }
+
+  Future<Uint8List> _readData(encryptedFilePath) async{
+    File file = File(encryptedFilePath);
+    return await file.readAsBytes();
+  }
+
+  _decryptBytes(encryptedBytes){
+    encryptor.Encrypted en = encryptor.Encrypted(encryptedBytes);
+    return dartEncryptor.encryAlgo.decryptBytes(en,iv:dartEncryptor.IV);
+  }
+
+  Future<String> _writeBytes(dataBytes, filePath) async {
+    File file = File(filePath);
+    await file.writeAsBytes(dataBytes);
+    return file.absolute.toString();
+  }
+
+  late Future decryImage;
 
   @override void initState() {
     super.initState();
-    // decryptImage(widget.path);
+    // decryImage = _decryptImages();
   }
 
+  _decryptImages() async{
+    Directory tempDirectory = await getTemporaryDirectory();
+    // tempDirPath = tempDirectory.path;
+    print(tempDirectory);
+    await _getDecryptedImage(tempDirectory);
+  }
 
   @override
   Widget build(BuildContext context){
-    while(true) {
-      try{
-        File file = File(widget.path);
-        break;
-      } on FileSystemException{
-        print("encrypted File not found");
-      }
-    }
-    decryptImage(widget.path);
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> ImagePreview(path: widget.path,
-          encryptedImageFiles: widget.encryptedImageFiles,
-          // delete: (){
-          //   print(encryptedImageFiles.length);
-          //   encryptedImageFiles.remove(encryptedImageFiles[index]);
-          //   print(encryptedImageFiles.length);
-          // },
-        )));
-      },
-      child: Container(
-        // color: Colors.white12,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
-          color: Colors.black,
-          // border: Border.all(color: Colors.cyanAccent, width: 2)
-        ),
-        child: Image(
-          image: FileImage(
-              File(widget.path),
-              scale: 1
-          ),
-          fit: BoxFit.contain,
+    print(File(tempDirPath+"/"+widget.path).existsSync());
+    print(tempDirPath+"/"+widget.path);
 
-        ),
-      ),);
+    return FutureBuilder(
+      future: _decryptImages(),
+      builder: (context, snapshot){
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+            print("Idle");
+            return Container(
+              // color: Colors.white12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: Colors.black,
+                // border: Border.all(color: Colors.cyanAccent, width: 2)
+              ),
+            );
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            print("Decrypting");
+            return Container(
+              // color: Colors.white12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: Colors.black,
+                // border: Border.all(color: Colors.cyanAccent, width: 2)
+              ),
+            );
+          case ConnectionState.done:
+            print("Decrypted");
+            return GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ImagePreview(path: "/data/user/0/dgx.nitro.nitro_img_aes/cache/"+widget.path,
+                  encryptedImageFiles: widget.encryptedImageFiles,
+                )));
+              },
+              child: Container(
+                // color: Colors.white12,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  color: Colors.black,
+                  // border: Border.all(color: Colors.cyanAccent, width: 2)
+                ),
+                child: Image(
+                  image: FileImage(
+                      File("/data/user/0/dgx.nitro.nitro_img_aes/cache/"+widget.path),
+                      scale: 1
+                  ),
+                  fit: BoxFit.contain,
+
+                ),
+              ),);
+          default:
+            return Container(
+              // color: Colors.white12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: Colors.black,
+                // border: Border.all(color: Colors.cyanAccent, width: 2)
+              ),
+            );
+        }
+      },
+    );
   }
 }
