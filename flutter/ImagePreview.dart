@@ -24,10 +24,16 @@ class ImagePreview extends StatefulWidget {
 }
 
 class _ImagePreviewState extends State<ImagePreview> {
+  String tempDirPath = "/data/user/0/dgx.nitro.nitro_img_aes/cache/";
 
   Future<Directory?> get getAppDir async {
     final appDocDir = await getExternalStorageDirectory();
     return appDocDir;
+  }
+  _getTemporaryDir() async{
+    Directory tempDir = await getTemporaryDirectory();
+    tempDirPath = tempDir.path;
+    print("_getTemporaryDir():\t"+tempDir.path);
   }
 
   @override
@@ -79,12 +85,13 @@ class _ImagePreviewState extends State<ImagePreview> {
             ),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  width: 370,
+                  width: 150,
                   child: ElevatedButton(
                         onPressed:() async{
+
                             print("ImagePreview.dart:\t"+widget.encryptedImageFiles.length.toString());
                             Directory? appDocDir = await getAppDir;
                             print(widget.path);
@@ -125,6 +132,49 @@ class _ImagePreviewState extends State<ImagePreview> {
                               width: 10,
                           ),
                           Text("Delete")
+                        ],
+                      ) ),
+                ),
+
+                SizedBox(
+                  width: 150,
+                  child: ElevatedButton(
+                      onPressed:() async{
+                        _getTemporaryDir();
+                        Directory? appDocDir = await getAppDir;
+                        print(widget.path);
+                        File imageFile = File(tempDirPath+"/"+basename(widget.path));
+                        var copyFile = await imageFile.copy(appDocDir!.path+"/Pictures/"+basename(widget.path));
+                        print("Encrypted Image Moved.");
+                        print("ImagePreview.dart:\t"+widget.encryptedImageFiles.length.toString());
+                      },
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                          onPrimary: Colors.redAccent,
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          elevation: 0,
+                          padding: const EdgeInsets.all(14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)
+                          ),
+                          // shape: OutlinedBorder(),
+                          side: const BorderSide(
+                            width: 1.8,
+                            color: Colors.redAccent,
+                          )
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.file_download_outlined,
+                            size: 24,),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("Export")
                         ],
                       ) ),
                 )

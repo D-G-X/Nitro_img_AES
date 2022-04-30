@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nitro_img_aes/gallery.dart';
-// import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:nitro_img_aes/dartEncrypt/dartEncryptor.dart';
 import 'package:nitro_img_aes/sharedPref.dart';
@@ -14,16 +13,16 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await SharedPref.init();
-
-  return runApp(
-      const MaterialApp(
-        home: HomePage(),
-      )
-  );
-}
+// void main() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await SharedPref.init();
+//
+//   return runApp(
+//       const MaterialApp(
+//         home: HomePage(),
+//       )
+//   );
+// }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -42,22 +41,10 @@ class _HomePageState extends State<HomePage> {
     print(SharedPref.getEncryptedImageFiles());
     counterRefresh.value = SharedPref.getCounter() ?? 0;
     encryptedImageFiles = SharedPref.getEncryptedImageFiles()??[];
+    print("HomePage: init State:"+SharedPref.getRegistered()!.toString());
   }
-  // static const platform = MethodChannel("com.flutter.nitro/AES");
 
-  // void Printy(String path) async{
-  //   String value;
-  //   try{
-  //     value = await platform.invokeMethod('Printy',{
-  //       "path": path,
-  //     });
-  //     // print("From Java:" + value);
-  //   }catch(e){
-  //     print("ERROR: Printy: "+e.toString());
-  //   }
-  // }
   List<String> encryptedImageFiles = [];
-  // int counter = 0;
   final ValueNotifier<int> counterRefresh = ValueNotifier<int>(0);
 
   final ImagePicker _picker = ImagePicker();
@@ -112,9 +99,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(15,30,15,0),
+        // padding: const EdgeInsets.fromLTRB(15,30,15,0),
+        padding: const EdgeInsets.fromLTRB(0,0,0,0),
         child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 70),
+          // margin: const EdgeInsets.fromLTRB(0, 0, 0, 70),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -127,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
               ,Container(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -224,7 +212,7 @@ class _HomePageState extends State<HomePage> {
 
               ),
               Container(
-                margin: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 70),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
