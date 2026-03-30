@@ -1,4 +1,4 @@
-# Nitro_img_AES
+# Image Encryption Vault Application using Flutter
 
 **Secure Image Encryption & Decryption Using AES**  
 _Miniproject – Semester V–VI_BACHELORS in COMPUTER ENGINEERING MUMBAI UNIVERSITY
